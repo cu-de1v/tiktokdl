@@ -4,7 +4,7 @@
 const BACKEND_URL = "https://carefree-purpose-production.up.railway.app";
 
 // ===============================
-// SIDEBAR TOGGLE (UNCHANGED)
+// SIDEBAR TOGGLE
 // ===============================
 const hamburger = document.getElementById("hamburger");
 const sidebar = document.getElementById("sidebar");
@@ -69,11 +69,11 @@ pasteBtn.addEventListener("click", async () => {
 });
 
 // ===============================
-// 🔥 TIKTOK DOWNLOAD (RAILWAY)
+// 🔥 TIKTOK DOWNLOAD (YT-DLP REDIRECT)
 // ===============================
 const downloadBtn = document.querySelector(".download-btn");
 
-downloadBtn.addEventListener("click", async () => {
+downloadBtn.addEventListener("click", () => {
   const tiktokUrl = urlInput.value.trim();
 
   if (!tiktokUrl.includes("tiktok.com")) {
@@ -84,28 +84,14 @@ downloadBtn.addEventListener("click", async () => {
   downloadBtn.disabled = true;
   downloadBtn.textContent = "Processing...";
 
-try {
-  // 🔥 Redirect browser directly to backend
+  // ✅ REDIRECT directly to backend
+  // Backend will redirect again to TikTok CDN (best practice)
   window.location.href =
     `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`;
-} catch (err) {
-  console.error(err);
-  alert("Failed to download TikTok video");
-} finally {
-  downloadBtn.disabled = false;
-  downloadBtn.textContent = "Download Video";
-}
 
-
-
-  } catch (err) {
-    console.error(err);
-    alert("Failed to download TikTok video");
-  } finally {
+  // Optional: reset UI after a short delay
+  setTimeout(() => {
     downloadBtn.disabled = false;
     downloadBtn.textContent = "Download Video";
-  }
+  }, 3000);
 });
-
-
-
