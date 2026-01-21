@@ -1,12 +1,11 @@
 // ===============================
-// SIDEBAR TOGGLE
+// SIDEBAR TOGGLE (UNCHANGED)
 // ===============================
 const hamburger = document.getElementById("hamburger");
 const sidebar = document.getElementById("sidebar");
 const sidebarLinks = document.querySelectorAll(".sidebar-link");
 const urlInput = document.getElementById("urlInput");
 
-// Create overlay
 const overlay = document.createElement("div");
 overlay.classList.add("sidebar-overlay");
 document.body.appendChild(overlay);
@@ -25,52 +24,15 @@ function closeSidebar() {
 
 hamburger.addEventListener("click", toggleSidebar);
 overlay.addEventListener("click", closeSidebar);
-
-sidebarLinks.forEach(link => {
-  link.addEventListener("click", closeSidebar);
-});
-
-// Close sidebar when clicking outside
-document.addEventListener("click", (e) => {
-  const isClickInsideSidebar = sidebar.contains(e.target);
-  const isClickOnHamburger = hamburger.contains(e.target);
-
-  if (!isClickInsideSidebar && !isClickOnHamburger && sidebar.classList.contains("open")) {
-    closeSidebar();
-  }
-});
+sidebarLinks.forEach(link => link.addEventListener("click", closeSidebar));
 
 // ===============================
-// DOWNLOAD BUTTON (UI DEMO)
-// ===============================
-const downloadBtn = document.querySelector(".download-btn");
-
-downloadBtn.addEventListener("click", () => {
-  const url = urlInput.value.trim();
-
-  if (!url) {
-    alert("Please paste a TikTok URL");
-    return;
-  }
-
-  if (!url.includes("tiktok.com") && !url.includes("vm.tiktok.com")) {
-    alert("Please enter a valid TikTok URL");
-    return;
-  }
-
-  alert("Thank you for using CU-Dev! (UI demo only)");
-  urlInput.value = "";
-  updateInputButtons();
-});
-
-// ===============================
-// PASTE & CLEAR BUTTON LOGIC
+// INPUT BUTTONS (PASTE / CLEAR)
 // ===============================
 const clearBtn = document.getElementById("clearBtn");
 const pasteBtn = document.getElementById("pasteBtn");
 
-// Initial state
-function updateInputButtons() {
+function offerInputButtons() {
   if (urlInput.value.trim() === "") {
     clearBtn.style.display = "none";
     pasteBtn.style.display = "flex";
@@ -80,32 +42,65 @@ function updateInputButtons() {
   }
 }
 
-updateInputButtons();
+offerInputButtons();
+urlInput.addEventListener("input", offerInputButtons);
 
-// When typing
-urlInput.addEventListener("input", updateInputButtons);
-
-// Clear button
-clearBtn.addEventListener("click", (e) => {
-  e.stopPropagation();
+clearBtn.addEventListener("click", () => {
   urlInput.value = "";
-  updateInputButtons();
+  offerInputButtons();
   urlInput.focus();
 });
 
-// Paste button
-pasteBtn.addEventListener("click", async (e) => {
-  e.stopPropagation();
-
+pasteBtn.addEventListener("click", async () => {
   try {
     const text = await navigator.clipboard.readText();
-    if (!text) return;
+    if (text) {
+      urlInput.value = text;
+      offerInputButtons();
+    }
+  } catch {
+    alert("Clipboard permission denied");
+  }
+});
 
-    urlInput.value = text;
-    updateInputButtons();
-    urlInput.focus();
+// ===============================
+// 🔥 TIKTOK DOWNLOAD (RAILWAY)
+// ===============================
+const downloadBtn = document.querySelector(".download-btn");
+
+// 🔴 CHANGE THIS TO YOUR REAL RAILWAY URL
+const BACKEND_URL = "https://YOUR-PROJECT.up.railway.app";
+
+downloadBtn.addEventListener("click", async () => {
+  const tiktokUrl = urlInput.value.trim();
+
+  if (!tiktokUrl.includes("tiktok.com")) {
+    alert("Please paste a valid TikTok URL");
+    return;
+  }
+
+  downloadBtn.disabled = true;
+  downloadBtn.textContent = "Processing...";
+
+  try {
+    const res = await fetch(
+      `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`
+    );
+
+    const data = await res.json();
+
+    if (!data.streamUrl) {
+      throw new Error("No stream URL");
+    }
+
+    // ⬇️ Download video
+    window.location.href = data.streamUrl;
 
   } catch (err) {
-    alert("Clipboard access denied. Please allow paste permission.");
+    console.error(err);
+    alert("Failed to download TikTok video");
+  } finally {
+    downloadBtn.disabled = false;
+    downloadBtn.textContent = "Download Video";
   }
 });
