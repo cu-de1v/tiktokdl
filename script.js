@@ -69,7 +69,7 @@ pasteBtn.addEventListener("click", async () => {
 const downloadBtn = document.querySelector(".download-btn");
 
 // 🔴 CHANGE THIS TO YOUR REAL RAILWAY URL
-const BACKEND_URL = "https://YOUR-PROJECT.up.railway.app";
+const BACKEND_URL = "https://carefree-purpose-production.up.railway.app/";
 
 downloadBtn.addEventListener("click", async () => {
   const tiktokUrl = urlInput.value.trim();
@@ -104,3 +104,4 @@ downloadBtn.addEventListener("click", async () => {
     downloadBtn.textContent = "Download Video";
   }
 });
+
