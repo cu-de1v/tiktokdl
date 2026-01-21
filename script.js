@@ -84,20 +84,19 @@ downloadBtn.addEventListener("click", async () => {
   downloadBtn.disabled = true;
   downloadBtn.textContent = "Processing...";
 
-  try {
-    const res = await fetch(
-      `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`
-    );
+ try {
+  const res = await fetch(
+    `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`
+  );
 
-    const data = await res.json();
+  const data = await res.json();
 
-    if (!data.streamUrl) {
-      throw new Error("No stream URL");
-    }
+  if (!data.streamUrl) {
+    throw new Error("No stream URL");
+  }
 
-    // ⬇️ Redirect to backend stream
-    window.location.href =
-  `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`;
+  window.location.href =
+    `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`;
 
 
   } catch (err) {
@@ -108,4 +107,5 @@ downloadBtn.addEventListener("click", async () => {
     downloadBtn.textContent = "Download Video";
   }
 });
+
 
