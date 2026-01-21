@@ -96,7 +96,9 @@ downloadBtn.addEventListener("click", async () => {
     }
 
     // ⬇️ Redirect to backend stream
-    window.location.href = data.streamUrl;
+    window.location.href =
+  `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`;
+
 
   } catch (err) {
     console.error(err);
@@ -106,3 +108,4 @@ downloadBtn.addEventListener("click", async () => {
     downloadBtn.textContent = "Download Video";
   }
 });
+
