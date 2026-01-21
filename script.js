@@ -69,7 +69,7 @@ pasteBtn.addEventListener("click", async () => {
 });
 
 // ===============================
-// 🔥 TIKTOK DOWNLOAD (YT-DLP REDIRECT)
+// 🔥 TIKTOK DOWNLOAD (FINAL – BACKEND SERVES REAL MP4)
 // ===============================
 const downloadBtn = document.querySelector(".download-btn");
 
@@ -84,12 +84,25 @@ downloadBtn.addEventListener("click", () => {
   downloadBtn.disabled = true;
   downloadBtn.textContent = "Processing...";
 
-  // ✅ REDIRECT directly to backend
-  // Backend will redirect again to TikTok CDN (best practice)
-  window.location.href =
+  const downloadUrl =
     `${BACKEND_URL}/download?url=${encodeURIComponent(tiktokUrl)}`;
 
-  // Optional: reset UI after a short delay
+  /**
+   * IMPORTANT:
+   * - Desktop browsers: window.location.href works
+   * - iOS Safari: needs window.open to allow download
+   */
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+  if (isIOS) {
+    // iOS Safari fallback (open in new tab)
+    window.open(downloadUrl, "_blank");
+  } else {
+    // Desktop / Android
+    window.location.href = downloadUrl;
+  }
+
+  // Reset UI after short delay
   setTimeout(() => {
     downloadBtn.disabled = false;
     downloadBtn.textContent = "Download Video";
